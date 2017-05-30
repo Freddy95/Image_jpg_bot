@@ -11,7 +11,8 @@ def bot_login():
 
 def run(r):
 	for comment in r.subreddit('test').comments(limit=25):
-		if "skip" in comment.body:
+		if "feelsbadman.jpg" in comment.body:
 			print comment.body
+			comment.reply("[feelsbadman.jpg](http://imgur.com/buEBNnk)")
 r = bot_login()
 run(r)

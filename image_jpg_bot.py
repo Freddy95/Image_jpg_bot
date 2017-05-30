@@ -11,8 +11,12 @@ def bot_login():
 
 def run(r):
 	for comment in r.subreddit('test').comments(limit=25):
-		if "feelsbadman.jpg" in comment.body:
-			print comment.body
-			comment.reply("[feelsbadman.jpg](http://imgur.com/buEBNnk)")
+		if comment.body in images:
+			comment.reply("[" + comment.body + "](" + images[comment.body] + ")");
+		
+
+
+comments_replied_to = []
+images = {"feelsbadman.jpg" : "http://imgur.com/buEBNnk", "iseewhatyoudidthere.jpg" : "http://imgur.com/9gBzlFv"}
 r = bot_login()
 run(r)

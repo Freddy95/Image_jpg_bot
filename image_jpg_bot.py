@@ -1,6 +1,6 @@
 import praw
 import config
-
+import os
 def bot_login():
 	r = praw.Reddit(username = config.username,
 				password = config.password,
@@ -9,14 +9,27 @@ def bot_login():
 				user_agent = "Image_jpg_bot agent")
 	return r
 
-def run(r):
+def run(r, comments_replied_to):
 	for comment in r.subreddit('test').comments(limit=25):
-		if comment.body in images:
-			comment.reply("[" + comment.body + "](" + images[comment.body] + ")");
-		
+		if comment.body in images and comment.id not in comments_replied_to and comment.author != r.user.me():
+			comment.reply("[" + comment.body + "](" + images[comment.body] + ")")
+			comments_replied_to.append(comment.id)
+			print comment.body
+			with open("comments_replied_to.txt", "a") as f:
+				f.write(comment.id + "\n")
 
+def get_saved_comments():
+	if not os.path.isfile("comments_replied_to.txt"):
+		comments_replied_to = []
+	else:
+		with open("comments_replied_to.txt", "r") as f:
+			comments_replied_to = f.read()
+			comments_replied_to = comments_replied_to.split("\n")
+	return comments_replied_to
 
-comments_replied_to = []
+comments_replied_to = get_saved_comments()
+print comments_replied_to
 images = {"feelsbadman.jpg" : "http://imgur.com/buEBNnk", "iseewhatyoudidthere.jpg" : "http://imgur.com/9gBzlFv"}
+
 r = bot_login()
-run(r)
+run(r, comments_replied_to)
